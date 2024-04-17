@@ -74,22 +74,12 @@ createTransaction = lambda : print("Starting transaction")
 
 start = chooseTransaction
 
-#--------------------------------------------------------------------------
-print("Store's balance before transaction: " + str(stores_balance["Store 1"]))
-print(start("Cash", "Store 1", "30"))
-print("Store's balance after transaction: " + str(stores_balance["Store 1"]))
+from flask import Flask
 
-print("--------------------------------------------------------------------------")
+app = Flask('app')
 
-print("Store's balance before transaction: " + str(stores_balance["Store 2"]))
-print("Client's balance before transaction: " + str(clients_balance["abc"]))
-start("Fund Transfer", "Store 2", "100")
-print("Store's balance after transaction: " + str(stores_balance["Store 2"]))
-print("Client's balance after transaction: " + str(clients_balance["abc"]))
+@app.route('/')
+def beginning () :
+    return start
 
-
-
-
-
-
-
+app.run(host='0.0.0.0', port=8080)

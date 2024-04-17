@@ -50,7 +50,7 @@ closeTransaction = lambda : print("Transaction closed")
 checkBankDetails = lambda code, password, amount : clients_bank_details[code] == password and clients_balance[code] >= amount if code in clients_bank_details.keys() else False
 paymentAnalysis = lambda user, code, password, amount : checkBankDetails(code, password, amount) if user in bank_clients.keys() else False
 
-action = lambda store, amount, user, code, password : transactionApproved(store, code, amount) if paymentAnalysis(user, code, password, amount) else print("Invalid deposit details or not enough balance. Transaction canceled.")
+action = lambda store, amount, user, code, password : transactionApproved(store, code, amount) if paymentAnalysis(user, code, password, amount) else "Invalid deposit details or not enough balance. Transaction canceled."
 
 user = lambda : input("User: ")
 code = lambda : input("Code: ")
@@ -74,22 +74,22 @@ createTransaction = lambda : print("Starting transaction")
 
 start = chooseTransaction
 
-#--------------------------------------------------------------------------
-print("Store's balance before transaction: " + str(stores_balance["Store 1"]))
-print(start("Cash", "Store 1", "30"))
-print("Store's balance after transaction: " + str(stores_balance["Store 1"]))
+testdict = lambda dic, key : key in dic.keys()
 
-print("--------------------------------------------------------------------------")
+#Testes unitários
+assert(testdict(bank_clients, "Mary"))
+assert("Invalid" in action("Store 1", "500", "Mar", "abc", "123"))
+assert("Valid" in action("Store 1", "500", "Mar", "abc", "123")), "User Mar does not exist"
 
-print("Store's balance before transaction: " + str(stores_balance["Store 2"]))
-print("Client's balance before transaction: " + str(clients_balance["abc"]))
-start("Fund Transfer", "Store 2", "100")
-print("Store's balance after transaction: " + str(stores_balance["Store 2"]))
-print("Client's balance after transaction: " + str(clients_balance["abc"]))
+#Teste de estresse
+import threading
+pbranches = 10000
+threads = []
+for i in range(pbranches):
+    t = threading.Thread(target=action, args=("Store 1", "500", "Mar", "abc", "123"))
+    threads.append(t)
+    t.start()
+for t in threads:
+    t.join()
 
-
-
-
-
-
-
+print(t)
