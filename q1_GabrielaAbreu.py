@@ -1,7 +1,13 @@
-stores_balance = {
+stores_balance = { 
     "Store 1" : "1500",
     "Store 2" : "1000", 
     "Store 3" : "500"
+}
+
+stores_details = {
+    "Store 1" : "jkl",
+    "Store 2" : "mno", 
+    "Store 3" : "pqr"
 }
 
 bank_clients = {
@@ -16,36 +22,48 @@ clients_bank_details = {
     "ghi" : "12345"
 }
 
-updateBalance = lambda store, amount : stores_balance.update({store : int(stores_balance[store]) + int(amount)})
+clients_balance = {
+    "abc" : "1000",
+    "def" : "500",
+    "ghi" : "0"
+}
+
+#--------------------------------------------------------------------------
+updateStoresBalance = lambda store, amount : stores_balance.update({store : int(stores_balance[store]) + int(amount)})
+updateClientsBalance = lambda code, amount : clients_balance.update({code : int(clients_balance[code]) - int(amount)})
 printReceipt  = lambda : print("Cash payment received")
 completeTransaction = lambda : print("Transaction completed")
 
-def transactionApproved(store, amount):
-    updateBalance(store, amount)
-    completeTransaction()
-
-checkBankApproval = lambda code, password : clients_bank_details[code] == password if code in clients_bank_details.keys() else False
-checkBankDetails = lambda code, password : True if checkBankApproval(code, password) else False
-paymentAnalysis = lambda user, code, password : checkBankDetails(code, password) if user in bank_clients.keys() else False
-action = lambda store, amount, user, code, password : transactionApproved(store, amount) if paymentAnalysis(user, code, password) else print("Invalid bank deposit details. Transaction canceled.")
-
 def execCash(store, amount):
-    updateBalance(store, amount)
+    updateStoresBalance(store, amount)
     printReceipt()
     completeTransaction()
 
+#--------------------------------------------------------------------------
+def transactionApproved(store, code, amount):
+    updateStoresBalance(store, amount)
+    updateClientsBalance(code, amount)
+    completeTransaction()
+    closeTransaction()
+
+closeTransaction = lambda : print("Transaction closed")
+checkBankDetails = lambda code, password, amount : clients_bank_details[code] == password and clients_balance[code] >= amount if code in clients_bank_details.keys() else False
+paymentAnalysis = lambda user, code, password, amount : checkBankDetails(code, password, amount) if user in bank_clients.keys() else False
+
+action = lambda store, amount, user, code, password : transactionApproved(store, code, amount) if paymentAnalysis(user, code, password, amount) else print("Invalid deposit details or not enough balance. Transaction canceled.")
+
+user = lambda : input("User: ")
+code = lambda : input("Code: ")
+password = lambda : input("Password: ")
+
 def execFundTransfer(store, amount):
-    user = "Mary"
-    code = "abc"
-    password = "123"
-    action(store, amount, user, code, password)
+    action(store, amount, user(), code(), password())
 
+#--------------------------------------------------------------------------
 def execCredit(store, amount):
-    user = "Mary"
-    code = "abc"
-    password = "123"
-    action(store, amount, user, code, password)
+    action(store, amount, user(), code(), password())
 
+#--------------------------------------------------------------------------
 def chooseTransaction(transactionType, store, amount):
     createTransaction()
     selectTransaction(transactionType, store, amount)
@@ -56,11 +74,20 @@ createTransaction = lambda : print("Starting transaction")
 
 start = chooseTransaction
 
+#--------------------------------------------------------------------------
+print("Store's balance before transaction: " + str(stores_balance["Store 1"]))
 print(start("Cash", "Store 1", "30"))
-print("---------------------")
-print(stores_balance["Store 2"])
+print("Store's balance after transaction: " + str(stores_balance["Store 1"]))
+
+print("--------------------------------------------------------------------------")
+
+print("Store's balance before transaction: " + str(stores_balance["Store 2"]))
+print("Client's balance before transaction: " + str(clients_balance["abc"]))
 print(start("Fund Transfer", "Store 2", "100"))
-print(stores_balance["Store 2"])
+print("Store's balance after transaction: " + str(stores_balance["Store 2"]))
+print("Client's balance after transaction: " + str(clients_balance["abc"]))
+
+
 
 
 
