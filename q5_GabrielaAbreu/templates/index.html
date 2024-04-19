@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='site.css')}}" />
+    </head>
+
+    <body>
+
+        <div class="body-content">
+            {% block content %}
+            Hello! Please, select the type of payment.
+            {% endblock %}
+        </div>
+
+        <div>
+            <div class = "col-2"><a href="{{ url_for('cash') }}" class="navbar-brand">Cash</a></div>
+            <div class = "col-2"></div><a href="{{ url_for('fundtransfer') }}" class="navbar-brand">Fund Transfer</a><div class = "col-4"></div>
+            <div class = "col-2"></div><a href="{{ url_for('credit') }}" class="navbar-brand">Credit</a></div>
+        </div>
+
+    </body>
+</html>

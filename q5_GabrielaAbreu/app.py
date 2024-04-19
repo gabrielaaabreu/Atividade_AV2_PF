@@ -1,3 +1,6 @@
+from flask import Flask, render_template
+app = Flask(__name__)
+
 stores_balance = { 
     "Store 1" : "1500",
     "Store 2" : "1000", 
@@ -31,55 +34,57 @@ clients_balance = {
 #--------------------------------------------------------------------------
 updateStoresBalance = lambda store, amount : stores_balance.update({store : int(stores_balance[store]) + int(amount)})
 updateClientsBalance = lambda code, amount : clients_balance.update({code : int(clients_balance[code]) - int(amount)})
-printReceipt  = lambda : print("Cash payment received")
-completeTransaction = lambda : print("Transaction completed")
+printReceipt  = lambda : "Cash payment received"
+completeTransaction = lambda : "Transaction completed"
 
 def execCash(store, amount):
     updateStoresBalance(store, amount)
-    printReceipt()
-    completeTransaction()
+    return printReceipt(), completeTransaction()
 
 #--------------------------------------------------------------------------
 def transactionApproved(store, code, amount):
-    updateStoresBalance(store, amount)
-    updateClientsBalance(code, amount)
-    completeTransaction()
-    closeTransaction()
+    return updateStoresBalance(store, amount), updateClientsBalance(code, amount), completeTransaction(), closeTransaction()
 
-closeTransaction = lambda : print("Transaction closed")
+closeTransaction = lambda : "Transaction closed"
 checkBankDetails = lambda code, password, amount : clients_bank_details[code] == password and clients_balance[code] >= amount if code in clients_bank_details.keys() else False
 paymentAnalysis = lambda user, code, password, amount : checkBankDetails(code, password, amount) if user in bank_clients.keys() else False
 
-action = lambda store, amount, user, code, password : transactionApproved(store, code, amount) if paymentAnalysis(user, code, password, amount) else print("Invalid deposit details or not enough balance. Transaction canceled.")
+action = lambda store, amount, user, code, password : transactionApproved(store, code, amount) if paymentAnalysis(user, code, password, amount) else "Invalid deposit details or not enough balance. Transaction canceled."
 
 user = lambda : input("User: ")
 code = lambda : input("Code: ")
 password = lambda : input("Password: ")
 
 def execFundTransfer(store, amount):
-    action(store, amount, user(), code(), password())
+    return action(store, amount, user(), code(), password())
 
 #--------------------------------------------------------------------------
 def execCredit(store, amount):
-    action(store, amount, user(), code(), password())
+    return action(store, amount, user(), code(), password())
 
 #--------------------------------------------------------------------------
 def chooseTransaction(transactionType, store, amount):
-    createTransaction()
-    selectTransaction(transactionType, store, amount)
+    return createTransaction(), selectTransaction(transactionType, store, amount)
 
 selectTransaction = lambda transactionType, store, amount : execCredit(store, amount) if transactionType == "Credit" else execCash(store, amount) if transactionType == "Cash" else execFundTransfer(store, amount) if transactionType == "Fund Transfer" else "Invalid transaction type"
 
-createTransaction = lambda : print("Starting transaction")
+createTransaction = lambda : "Starting transaction"
 
 start = chooseTransaction
 
-from flask import Flask
+@app.route("/")
+def home():
+    return render_template("index.html")
 
-app = Flask('app')
+@app.route("/cash")
+def cash():
+    res = lambda : [e for e in start("Cash", "Store 1", "50")]
+    return res()
 
-@app.route('/')
-def beginning () :
-    return start
+@app.route("/fundtransfer")
+def fundtransfer():
+    return "hello!"
 
-app.run(host='0.0.0.0', port=8080)
+@app.route("/credit")
+def credit():
+    return "hello2!"

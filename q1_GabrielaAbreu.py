@@ -75,17 +75,17 @@ createTransaction = lambda : print("Starting transaction")
 start = chooseTransaction
 
 #--------------------------------------------------------------------------
-print("Store's balance before transaction: " + str(stores_balance["Store 1"]))
-print(start("Cash", "Store 1", "30"))
-print("Store's balance after transaction: " + str(stores_balance["Store 1"]))
+'''print("Store balance before transaction: " + str(stores_balance["Store 1"]))'''
+start("Cash", "Store 1", "30")
+'''print("Store balance after transaction: " + str(stores_balance["Store 1"]))'''
 
 print("--------------------------------------------------------------------------")
 
-print("Store's balance before transaction: " + str(stores_balance["Store 2"]))
-print("Client's balance before transaction: " + str(clients_balance["abc"]))
+'''print("Store balance before transaction: " + str(stores_balance["Store 2"]))
+print("Client balance before transaction: " + str(clients_balance["abc"]))'''
 start("Fund Transfer", "Store 2", "100")
-print("Store's balance after transaction: " + str(stores_balance["Store 2"]))
-print("Client's balance after transaction: " + str(clients_balance["abc"]))
+'''print("Store balance after transaction: " + str(stores_balance["Store 2"]))
+print("Client balance after transaction: " + str(clients_balance["abc"]))'''
 
 
 
