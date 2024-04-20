@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 app = Flask(__name__)
 
 stores_balance = { 
@@ -51,9 +51,9 @@ paymentAnalysis = lambda user, code, password, amount : checkBankDetails(code, p
 
 action = lambda store, amount, user, code, password : transactionApproved(store, code, amount) if paymentAnalysis(user, code, password, amount) else "Invalid deposit details or not enough balance. Transaction canceled."
 
-user = lambda : input("User: ")
-code = lambda : input("Code: ")
-password = lambda : input("Password: ")
+user = lambda : str(request.form["username"])
+code = lambda : str(request.form["usercode"])
+password = lambda : str(request.form["userpassword"])
 
 def execFundTransfer(store, amount):
     return action(store, amount, user(), code(), password())
@@ -81,10 +81,22 @@ def cash():
     res = lambda : [e for e in start("Cash", "Store 1", "50")]
     return res()
 
-@app.route("/fundtransfer")
+@app.route("/fundtransfer/", methods = ["POST", "GET"])
 def fundtransfer():
-    return "hello!"
+    if request.method == "POST":
+        res = lambda : [e for e in start("Fund Transfer", "Store 1", "5")]
+        return res()
+    else:
+        return render_template("info.html")
+    
 
-@app.route("/credit")
+@app.route("/credit", methods = ["POST", "GET"])
 def credit():
-    return "hello2!"
+    if request.method == "POST":
+        res = lambda : [e for e in start("Fund Transfer", "Store 1", "50")]
+        return res()
+    else:
+        return render_template("info.html")
+
+
+    

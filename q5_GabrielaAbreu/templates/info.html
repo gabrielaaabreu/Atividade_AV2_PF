@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='site.css')}}" />
+    </head>
+
+    <body>
+
+        <div class="body-content">
+            {% block content %}
+            Enter your bank details.
+            {% endblock %}
+            <br><br>
+        </div>
+
+        <form action="#" method="POST">
+            <label for="fname">User:</label>
+            <input type="text" name="username"><br><br>
+            <label for="fname">Code:</label>
+            <input type="text" name="usercode"><br><br>
+            <label for="fname">Password:</label>
+            <input type="text" name="userpassword"><br><br>
+            <input type="submit" value="submit"/>
+        </form>
+    </body>
+</html>
