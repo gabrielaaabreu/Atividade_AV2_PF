@@ -1,3 +1,4 @@
+import functools
 from flask import Flask, render_template, request
 app = Flask(__name__)
 
@@ -43,13 +44,14 @@ def execCash(store, amount):
 
 #--------------------------------------------------------------------------
 def transactionApproved(store, code, amount):
-    return updateStoresBalance(store, amount), updateClientsBalance(code, amount), completeTransaction(), closeTransaction()
+    updateStoresBalance(store, amount), updateClientsBalance(code, amount)
+    return completeTransaction(), closeTransaction()
 
 closeTransaction = lambda : "Transaction closed"
-checkBankDetails = lambda code, password, amount : clients_bank_details[code] == password and clients_balance[code] >= amount if code in clients_bank_details.keys() else False
-paymentAnalysis = lambda user, code, password, amount : checkBankDetails(code, password, amount) if user in bank_clients.keys() else False
 
-action = lambda store, amount, user, code, password : transactionApproved(store, code, amount) if paymentAnalysis(user, code, password, amount) else "Invalid deposit details or not enough balance. Transaction canceled."
+paymentAnalysis = lambda user, code, password: clients_bank_details[code] == password if user in bank_clients.keys() else False
+
+action = lambda store, amount, user, code, password : transactionApproved(store, code, amount) if paymentAnalysis(user, code, password) else "Invalid deposit details or not enough balance. Transaction canceled."
 
 user = lambda : str(request.form["username"])
 code = lambda : str(request.form["usercode"])
@@ -90,10 +92,10 @@ def fundtransfer():
         return render_template("info.html")
     
 
-@app.route("/credit", methods = ["POST", "GET"])
+@app.route("/credit/", methods = ["POST", "GET"])
 def credit():
     if request.method == "POST":
-        res = lambda : [e for e in start("Fund Transfer", "Store 1", "50")]
+        res = lambda : [e for e in start("Credit", "Store 1", "50")]
         return res()
     else:
         return render_template("info.html")

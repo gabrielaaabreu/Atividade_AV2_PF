@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="utf-8" />
+        <meta charset="utf-8" name="viewport" content="inicial-scale=1, width=devide-width"/>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='site.css')}}" />
     </head>
 
@@ -16,12 +16,12 @@
 
         <form action="#" method="POST">
             <label for="fname">User:</label>
-            <input type="text" name="username"><br><br>
+            <input autocomplete="off" type="text" name="username"><br><br>
             <label for="fname">Code:</label>
-            <input type="text" name="usercode"><br><br>
+            <input autocomplete="off" type="text" name="usercode"><br><br>
             <label for="fname">Password:</label>
-            <input type="text" name="userpassword"><br><br>
-            <input type="submit" value="submit"/>
+            <input autocomplete="off" type="text" name="userpassword"><br><br>
+            <button type="submit">Send</button>
         </form>
     </body>
 </html>
