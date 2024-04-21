@@ -106,6 +106,7 @@ def credit():
         return res()
     else:
         return render_template("info.html")
+    
 
 
     
