@@ -1,6 +1,13 @@
-import functools
+from Crypto.Cipher import AES
+from Crypto.Random import get_random_bytes
+from Crypto.Util.Padding import pad, unpad
 from flask import Flask, render_template, request
 app = Flask(__name__)
+
+key = get_random_bytes(16)
+iv = get_random_bytes(16)
+cipher = AES.new(key, AES.MODE_CBC, iv)
+decipher = AES.new(key, AES.MODE_CBC, iv)
 
 stores_balance = { 
     "Store 1" : "1500",
@@ -21,9 +28,9 @@ bank_clients = {
 }
 
 clients_bank_details = {
-    "abc" : "123",
-    "def" : "1234",
-    "ghi" : "12345"
+    "abc" : cipher.encrypt(pad(b'123', 16)),
+    "def" : cipher.encrypt(pad(b'1234', 16)),
+    "ghi" : cipher.encrypt(pad(b'12345', 16))
 }
 
 clients_balance = {
@@ -49,13 +56,13 @@ def transactionApproved(store, code, amount):
 
 closeTransaction = lambda : "Transaction closed"
 
-paymentAnalysis = lambda user, code, password: clients_bank_details[code] == password if user in bank_clients.keys() else False
+paymentAnalysis = lambda user, code, password: unpad(decipher.decrypt(clients_bank_details[code]), 16).decode("UTF-8") == password if user in bank_clients.keys() else False
 
 action = lambda store, amount, user, code, password : transactionApproved(store, code, amount) if paymentAnalysis(user, code, password) else "Invalid deposit details or not enough balance. Transaction canceled."
 
-user = lambda : str(request.form["username"])
-code = lambda : str(request.form["usercode"])
-password = lambda : str(request.form["userpassword"])
+user = lambda : request.form.get("username")
+code = lambda : request.form.get("usercode")
+password = lambda : request.form.get("userpassword")
 
 def execFundTransfer(store, amount):
     return action(store, amount, user(), code(), password())

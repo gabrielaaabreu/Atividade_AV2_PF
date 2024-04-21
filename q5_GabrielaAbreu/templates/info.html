@@ -1,27 +1,20 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8" name="viewport" content="inicial-scale=1, width=devide-width"/>
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='site.css')}}" />
-    </head>
+{% extends "layout.html" %}
 
-    <body>
+{% block body %}
 
-        <div class="body-content">
-            {% block content %}
-            Enter your bank details.
-            {% endblock %}
-            <br><br>
-        </div>
+<div class="body-content">
+    Enter your bank details.
+    <br><br>
+</div>
 
-        <form action="#" method="POST">
-            <label for="fname">User:</label>
-            <input autocomplete="off" type="text" name="username"><br><br>
-            <label for="fname">Code:</label>
-            <input autocomplete="off" type="text" name="usercode"><br><br>
-            <label for="fname">Password:</label>
-            <input autocomplete="off" type="text" name="userpassword"><br><br>
-            <button type="submit">Send</button>
-        </form>
-    </body>
-</html>
+<form action="#" method="post">
+    <label for="fname">User:</label>
+    <input type="text" name="username"><br><br>
+    <label for="fname">Code:</label>
+    <input autocomplete="off" type="text" name="usercode"><br><br>
+    <label for="fname">Password:</label>
+    <input autocomplete="off" type="text" name="userpassword"><br><br>
+    <button type="submit">Send</button>
+</form>
+
+{% endblock %}
