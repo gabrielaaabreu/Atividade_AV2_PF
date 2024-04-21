@@ -56,7 +56,7 @@ def transactionApproved(store, code, amount):
 
 closeTransaction = lambda : "Transaction closed"
 
-paymentAnalysis = lambda user, code, password: unpad(decipher.decrypt(clients_bank_details[code]), 16).decode("UTF-8") == password if user in bank_clients.keys() else False
+paymentAnalysis = lambda user, code, password: unpad(decipher.decrypt(clients_bank_details[code]), 16).decode() == password if user in bank_clients.keys() else False
 
 action = lambda store, amount, user, code, password : transactionApproved(store, code, amount) if paymentAnalysis(user, code, password) else "Invalid deposit details or not enough balance. Transaction canceled."
 
