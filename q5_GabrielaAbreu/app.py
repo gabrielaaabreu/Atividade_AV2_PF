@@ -40,18 +40,18 @@ clients_balance = {
 }
 
 #--------------------------------------------------------------------------
-updateStoresBalance = lambda store, amount : stores_balance.update({store : int(stores_balance[store]) + int(amount)})
+updateStoreBalance = lambda store, amount : stores_balance.update({store : int(stores_balance[store]) + int(amount)})
 updateClientsBalance = lambda code, amount : clients_balance.update({code : int(clients_balance[code]) - int(amount)})
 printReceipt  = lambda : "Cash payment received"
 completeTransaction = lambda : "Transaction completed"
 
 def execCash(store, amount):
-    updateStoresBalance(store, amount)
+    updateStoreBalance(store, amount)
     return printReceipt(), completeTransaction()
 
 #--------------------------------------------------------------------------
 def transactionApproved(store, code, amount):
-    updateStoresBalance(store, amount), updateClientsBalance(code, amount)
+    updateStoreBalance(store, amount), updateClientsBalance(code, amount)
     return completeTransaction(), closeTransaction()
 
 closeTransaction = lambda : "Transaction closed"
@@ -81,6 +81,10 @@ createTransaction = lambda : "Starting transaction"
 
 start = chooseTransaction
 
+gettingFundTransfer = lambda : [e for e in start("Fund Transfer", "Store 1", "5")] if request.method == "POST" else render_template("info.html")
+
+gettingCredit = lambda : [e for e in start("Credit", "Store 1", "50")] if request.method == "POST" else render_template("info.html")
+
 @app.route("/")
 def home():
     return render_template("index.html")
@@ -92,20 +96,12 @@ def cash():
 
 @app.route("/fundtransfer/", methods = ["POST", "GET"])
 def fundtransfer():
-    if request.method == "POST":
-        res = lambda : [e for e in start("Fund Transfer", "Store 1", "5")]
-        return res()
-    else:
-        return render_template("info.html")
+    return gettingFundTransfer()
     
 
 @app.route("/credit/", methods = ["POST", "GET"])
 def credit():
-    if request.method == "POST":
-        res = lambda : [e for e in start("Credit", "Store 1", "50")]
-        return res()
-    else:
-        return render_template("info.html")
+    return gettingCredit()
     
 
 
